@@ -94,16 +94,20 @@ README.md      ce fichier
 
 La page applique la **charte visuelle Aiguillon** (dépôt `charte-visuelle`).
 Ses jetons de couleur (`jetons.css`) sont repris à l'identique dans le
-`<style>`.
+`<style>`, avec le bandeau officiel du rail.
 
-**Navigation.** Une barre collée en haut, aux bleus du bandeau de la charte :
+**Navigation.** Deux accès, toujours synchronisés :
 
-- six onglets, avec un curseur blanc qui glisse sous la page active ;
-- un filet sous la barre qui suit l'avancée de la lecture ;
-- sous 1080 px, les onglets laissent place à un bouton qui indique la page en
-  cours et déplie un **volet** avec les six pages en cartes ;
-- en bas de chaque page, des liens vers la page précédente et la suivante ;
-- au clavier : `←` / `→` pour changer de page, `Échap` pour refermer le volet ;
+- à gauche, le **rail** de la charte (bandeau officiel, facettes) avec les six
+  pages. Sous 900 px, il se replie derrière un bouton « Sommaire » ;
+- en haut du texte, une **barre des pages** qui reste visible au défilement :
+  - « précédente » et « suivante » aux deux bouts, avec le titre de la page voisine ;
+  - au milieu, les six pages en pastilles numérotées. Celle qu'on lit déplie son
+    titre, et un curseur bleu glisse jusqu'à elle ;
+  - un filet, dessous, qui suit l'avancée de la lecture ;
+  - le bouton clair / sombre ;
+- en bas de chaque page, la précédente et la suivante en grandes cartes ;
+- au clavier : `←` / `→` pour changer de page, `Échap` pour replier le rail ;
 - la page glisse du côté où l'on va, et ses blocs apparaissent en cascade
   (mouvements repris de l'application Oukilest, dépôt `SIG`).
 
@@ -115,7 +119,7 @@ leurs textes suivent le thème. Sur téléphone, elles gardent une largeur lisib
 et se font défiler du doigt dans leur carte.
 
 **Thème sombre.** Il suit le réglage du poste, et le bouton soleil / lune de la
-barre (`bouton-theme` de la charte) permet de le forcer. Le choix n'est pas
+barre des pages (`bouton-theme` de la charte) permet de le forcer. Le choix n'est pas
 mémorisé. Toutes les animations sont coupées si le poste demande moins de
 mouvement.
 
@@ -130,7 +134,7 @@ python3 <charte>/outils/theme.py index.html        # reprend les nouveaux jetons
 ## Modifier le contenu
 
 Chaque page est une `<section class="page" id="…">` dans `index.html`. Les
-onglets pointent vers ces identifiants par `data-go="…"`. Pour ajouter une page,
-il faut une section, un onglet qui porte le même identifiant et une carte sur
-l'accueil, que le volet reprend toute seule. Le script recalcule les liens
+boutons du rail et les pastilles de la barre pointent vers ces identifiants par
+`data-go="…"`. Pour ajouter une page, il faut une section, puis un bouton dans
+le rail et une pastille dans la barre qui portent le même identifiant. Le script recalcule les liens
 « précédente / suivante » d'après l'ordre des sections.
