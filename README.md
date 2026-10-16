@@ -92,21 +92,32 @@ README.md      ce fichier
 
 ## Mise en forme
 
-La page applique la **charte visuelle Aiguillon** (dépôt `charte-visuelle`) :
+La page applique la **charte visuelle Aiguillon** (dépôt `charte-visuelle`).
+Ses jetons de couleur (`jetons.css`) sont repris à l'identique dans le
+`<style>`.
 
-- les jetons de couleur (`jetons.css`) sont repris à l'identique dans le
-  `<style>`, avec le bandeau officiel du rail ;
-- la coquille reprend le **rail** de navigation (`socle.css`, `motif-rail.css`),
-  qui se replie derrière un bouton « Sommaire » sous 900 px ;
-- un **thème sombre** suit le réglage du poste et se force avec le bouton clair /
-  sombre en bas à droite (`bouton-theme`). Le choix n'est pas mémorisé ;
-- les illustrations SVG suivent le thème : leurs couleurs sont rebranchées sur
-  les jetons en CSS, sans toucher aux dessins.
+**Navigation.** Une barre collée en haut, aux bleus du bandeau de la charte :
 
-Les mouvements reprennent ceux de l'application Oukilest (`SIG`) : les blocs
-d'une page montent en cascade (22 ms d'écart, courbe *outCubic*), et les cartes
-réagissent au survol et au clic. Ils sont désactivés si le poste demande moins
-d'animations.
+- six onglets, avec un curseur blanc qui glisse sous la page active ;
+- un filet sous la barre qui suit l'avancée de la lecture ;
+- sous 1080 px, les onglets laissent place à un bouton qui indique la page en
+  cours et déplie un **volet** avec les six pages en cartes ;
+- en bas de chaque page, des liens vers la page précédente et la suivante ;
+- au clavier : `←` / `→` pour changer de page, `Échap` pour refermer le volet ;
+- la page glisse du côté où l'on va, et ses blocs apparaissent en cascade
+  (mouvements repris de l'application Oukilest, dépôt `SIG`).
+
+**Illustrations.** Six scènes en SVG, dessinées pour le dossier (lampe torche,
+lotissement, travaux, argentique, GPS, ligne de partage), plus les icônes des
+cartes. Elles sont animées discrètement : flux dans le réseau commun, signaux
+faibles qui pulsent, voitures qui piétinent, boucle qui tourne. Leur fond et
+leurs textes suivent le thème. Sur téléphone, elles gardent une largeur lisible
+et se font défiler du doigt dans leur carte.
+
+**Thème sombre.** Il suit le réglage du poste, et le bouton soleil / lune de la
+barre (`bouton-theme` de la charte) permet de le forcer. Le choix n'est pas
+mémorisé. Toutes les animations sont coupées si le poste demande moins de
+mouvement.
 
 Après une évolution de la charte, on vérifie et on resynchronise depuis le clone
 de la charte :
@@ -119,6 +130,7 @@ python3 <charte>/outils/theme.py index.html        # reprend les nouveaux jetons
 ## Modifier le contenu
 
 Chaque page est une `<section class="page" id="…">` dans `index.html`. Les
-boutons de navigation pointent vers ces identifiants par `data-go="…"`. Pour
-ajouter une page, il faut une section et un bouton qui portent le même
-identifiant. Le script en bas du fichier n'a pas besoin d'être modifié.
+onglets pointent vers ces identifiants par `data-go="…"`. Pour ajouter une page,
+il faut une section, un onglet qui porte le même identifiant et une carte sur
+l'accueil, que le volet reprend toute seule. Le script recalcule les liens
+« précédente / suivante » d'après l'ordre des sections.
