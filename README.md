@@ -13,9 +13,9 @@ Deux idées traversent tout le dossier :
   méta** : du « faire » vers « gouverner le sens et en répondre ».
 
 C'est un **site statique d'une seule page** (`index.html`) : pas de framework,
-pas de build, pas de dépendance. Les styles, les illustrations (SVG) et la
-navigation sont dans le fichier. Seules les polices viennent de Google Fonts ;
-hors ligne, la page reste lisible avec les polices de repli.
+pas de build, pas de dépendance. Les styles, les illustrations (SVG), le
+bandeau et la navigation sont dans le fichier. Seules les polices viennent de
+Google Fonts ; hors ligne, la page reste lisible avec les polices de repli.
 
 ---
 
@@ -84,10 +84,36 @@ convient.
 ## Structure
 
 ```
-index.html     le dossier complet : styles, illustrations SVG, navigation
+index.html     le dossier complet : styles (charte), illustrations SVG, navigation
 package.json   le seul script « start » (serveur local)
 README.md      ce fichier
 .gitignore
+```
+
+## Mise en forme
+
+La page applique la **charte visuelle Aiguillon** (dépôt `charte-visuelle`) :
+
+- les jetons de couleur (`jetons.css`) sont repris à l'identique dans le
+  `<style>`, avec le bandeau officiel du rail ;
+- la coquille reprend le **rail** de navigation (`socle.css`, `motif-rail.css`),
+  qui se replie derrière un bouton « Sommaire » sous 900 px ;
+- un **thème sombre** suit le réglage du poste et se force avec le bouton clair /
+  sombre en bas à droite (`bouton-theme`). Le choix n'est pas mémorisé ;
+- les illustrations SVG suivent le thème : leurs couleurs sont rebranchées sur
+  les jetons en CSS, sans toucher aux dessins.
+
+Les mouvements reprennent ceux de l'application Oukilest (`SIG`) : les blocs
+d'une page montent en cascade (22 ms d'écart, courbe *outCubic*), et les cartes
+réagissent au survol et au clic. Ils sont désactivés si le poste demande moins
+d'animations.
+
+Après une évolution de la charte, on vérifie et on resynchronise depuis le clone
+de la charte :
+
+```bash
+python3 <charte>/outils/couverture.py index.html   # aucun jeton manquant ?
+python3 <charte>/outils/theme.py index.html        # reprend les nouveaux jetons
 ```
 
 ## Modifier le contenu
