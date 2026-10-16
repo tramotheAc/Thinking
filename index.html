@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA, données & applications — doctrine DSI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECEEF0; --paper-2:#E3E6E9;
+    --ink:#17212B; --ink-soft:#3E4B57; --ink-faint:#6C7783;
+    --ochre:#B06710; --ochre-wash:#F3E6D3;
+    --blue:#1B5A99; --blue-wash:#DCE6F0;
+    --crimson:#9E2B2B; --crimson-wash:#F0DEDC;
+    --hair:#C4CACF; --panel:#F6F7F8;
+    --maxw:820px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Spectral",Georgia,serif;font-size:18.5px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;}
+  .display{font-family:"Archivo",system-ui,sans-serif;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+
+  /* ---------- NAV ---------- */
+  nav.top{position:sticky;top:0;z-index:50;background:rgba(236,238,240,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);}
+  .navinner{max-width:1080px;margin:0 auto;padding:11px 24px;display:flex;
+    align-items:center;gap:18px;}
+  .brand{font-family:"Archivo",sans-serif;font-weight:800;font-size:15px;letter-spacing:-.01em;
+    white-space:nowrap;color:var(--ink);cursor:pointer;background:none;border:0;padding:0;}
+  .brand .dot{color:var(--ochre);}
+  .navlinks{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-left:auto;}
+  .navlinks::-webkit-scrollbar{display:none;}
+  .navlinks button{font-family:"Archivo",sans-serif;font-weight:600;font-size:13px;
+    color:var(--ink-faint);background:none;border:0;padding:7px 11px;border-radius:5px;
+    white-space:nowrap;cursor:pointer;transition:background .15s,color .15s;}
+  .navlinks button:hover{color:var(--ink);background:var(--paper-2);}
+  .navlinks button[aria-current="true"]{color:var(--ink);background:#fff;
+    box-shadow:inset 0 0 0 1px var(--hair);}
+
+  /* ---------- PAGES ---------- */
+  .page{display:none;padding:52px 0 40px;animation:fade .4s ease;}
+  .page.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){.page{animation:none;}}
+
+  .eyebrow{font-family:"Archivo",sans-serif;font-weight:700;font-size:12.5px;
+    letter-spacing:.09em;color:var(--ochre);margin:0 0 14px;}
+  .eyebrow.blue{color:var(--blue);}
+  h1.ttl{font-family:"Archivo",sans-serif;font-weight:800;
+    font-size:clamp(30px,5.2vw,50px);line-height:1.04;letter-spacing:-.02em;margin:0 0 10px;}
+  .sub{font-size:20px;color:var(--ink-soft);max-width:40ch;margin:18px 0 0;}
+  h2{font-family:"Archivo",sans-serif;font-weight:700;font-size:clamp(22px,3.4vw,30px);
+    line-height:1.14;letter-spacing:-.01em;margin:46px 0 16px;}
+  h3{font-family:"Archivo",sans-serif;font-weight:700;font-size:19px;margin:30px 0 8px;}
+  p{margin:0 0 17px;} strong{font-weight:600;}
+  .em-o{color:var(--ochre);font-weight:600;} .em-b{color:var(--blue);font-weight:600;}
+  .em-c{color:var(--crimson);font-weight:600;}
+  hr.rule{border:0;border-top:1px solid var(--hair);margin:34px 0;}
+
+  /* analogy block */
+  .story{background:var(--panel);border:1px solid var(--hair);border-radius:4px;
+    padding:22px 24px;margin:26px 0;font-size:18px;color:var(--ink-soft);}
+  .story .life{font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.04em;color:var(--ink-faint);margin:0 0 8px;}
+  figure{margin:24px 0;}
+  figure svg{width:100%;height:auto;display:block;}
+  figcaption{font-family:"Archivo",sans-serif;font-size:13px;color:var(--ink-faint);
+    margin-top:11px;line-height:1.5;}
+  .illus{background:var(--panel);border:1px solid var(--hair);border-radius:4px;padding:22px;}
+
+  .bridge{border-left:3px solid var(--crimson);background:var(--crimson-wash);
+    padding:17px 20px;border-radius:0 3px 3px 0;margin:26px 0;}
+  .bridge .h{font-family:"Archivo",sans-serif;font-weight:700;font-size:13px;
+    color:var(--crimson);margin:0 0 6px;letter-spacing:.03em;}
+  .bridge p{margin:0;font-size:16.5px;color:var(--ink-soft);}
+
+  .thesis{font-family:"Archivo",sans-serif;font-weight:700;
+    font-size:clamp(19px,2.9vw,24px);line-height:1.26;letter-spacing:-.01em;
+    margin:30px 0;padding-left:20px;border-left:3px solid var(--ink);}
+
+  .keep{background:var(--ink);color:var(--paper);border-radius:5px;padding:26px 28px;margin:34px 0 8px;}
+  .keep .k{font-family:"Archivo",sans-serif;font-weight:700;font-size:12.5px;
+    letter-spacing:.08em;color:#9AA6B0;margin:0 0 12px;}
+  .keep p{color:#D3DAE0;margin:0 0 10px;font-size:17px;}
+  .keep p:last-child{margin:0;}
+  .keep b{color:#fff;font-weight:600;}
+
+  /* two-column compare */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0;}
+  .col{border:1px solid var(--hair);border-radius:4px;padding:18px 20px;background:var(--panel);}
+  .col.o{border-top:3px solid var(--ochre);} .col.b{border-top:3px solid var(--blue);}
+  .col h4{font-family:"Archivo",sans-serif;font-weight:800;font-size:16px;margin:0 0 10px;}
+  .col.o h4{color:var(--ochre);} .col.b h4{color:var(--blue);}
+  .col ul{margin:0;padding-left:18px;} .col li{margin:6px 0;font-size:15.5px;line-height:1.45;}
+  @media(max-width:620px){.split{grid-template-columns:1fr;}}
+
+  /* flow chips */
+  .flow{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:20px 0;}
+  .flow .c{font-family:"Archivo",sans-serif;font-weight:600;font-size:13.5px;
+    background:#fff;border:1px solid var(--hair);border-radius:20px;padding:7px 13px;}
+  .flow .c.end{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .flow .ar{color:var(--ink-faint);font-weight:700;}
+
+  /* home cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0;}
+  .navcard{text-align:left;background:#fff;border:1px solid var(--hair);border-radius:5px;
+    padding:20px;cursor:pointer;transition:transform .15s,box-shadow .15s;
+    display:flex;gap:16px;align-items:flex-start;font-family:inherit;}
+  .navcard:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(23,33,43,.09);}
+  .navcard .ic{flex:0 0 46px;}
+  .navcard .tx .n{font-family:"Archivo",sans-serif;font-weight:800;font-size:16px;margin:0 0 4px;color:var(--ink);}
+  .navcard .tx .d{font-size:14.5px;color:var(--ink-soft);line-height:1.45;margin:0;}
+  @media(max-width:620px){.cards{grid-template-columns:1fr;}}
+
+  .refs{margin:18px 0;}
+  .ref{padding:11px 0 11px 15px;border-top:1px solid var(--hair);border-left:3px solid var(--hair);}
+  .ref:first-child{border-top:0;} .ref.found{border-left-color:var(--ink);}
+  .ref.win{border-left-color:var(--blue);} .ref.fail{border-left-color:var(--crimson);}
+  .ref .who{font-family:"Archivo",sans-serif;font-weight:700;font-size:14.5px;}
+  .ref .what{font-style:italic;color:var(--ink-soft);} .ref .src{font-family:"Archivo",sans-serif;
+    font-size:12px;color:var(--ink-faint);display:block;margin-top:2px;}
+
+  footer.sitefoot{border-top:1px solid var(--hair);margin-top:40px;}
+  footer.sitefoot .wrap{padding-top:26px;padding-bottom:70px;}
+  .colophon{font-family:"Archivo",sans-serif;font-size:12.5px;color:var(--ink-faint);line-height:1.6;}
+
+  @media print{
+    nav.top{display:none;} .page{display:block !important;animation:none;
+      page-break-after:always;border-top:2px solid var(--ink);}
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="navinner">
+    <button class="brand" data-go="accueil">Doctrine IA<span class="dot">·</span>données<span class="dot">·</span>applications</button>
+    <div class="navlinks">
+      <button data-go="accueil">Accueil</button>
+      <button data-go="ia">IA &amp; MCP</button>
+      <button data-go="apps">Applications</button>
+      <button data-go="typo">Typologie &amp; shadow</button>
+      <button data-go="metier">Métier &amp; compétences</button>
+      <button data-go="waze">Atrophie &amp; effets de bord</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ ACCUEIL ============ -->
+<section class="page" id="accueil">
+  <div class="wrap">
+    <p class="eyebrow">DOSSIER DSI — BAILLEUR SOCIAL</p>
+    <h1 class="ttl display">Ce qui devient gratuit,<br>et ce qui devient rare.</h1>
+    <p class="sub">Une synthèse des réflexions sur l'IA, l'entrepôt de données et le vibecoding — et la doctrine qui en ressort.</p>
+
+    <figure>
+      <div class="illus">
+        <svg viewBox="0 0 760 150" role="img" aria-label="La ligne de partage entre ce qu'on diffère et ce qu'on verrouille">
+          <line x1="30" y1="75" x2="730" y2="75" stroke="#17212B" stroke-width="2.5"/>
+          <circle cx="380" cy="75" r="7" fill="#17212B"/>
+          <text x="30" y="45" font-family="Archivo" font-weight="800" font-size="17" fill="#B06710">Différer</text>
+          <text x="30" y="108" font-family="Spectral" font-size="14.5" fill="#3E4B57">bon marché à changer · l'IA le fera plus tard</text>
+          <text x="730" y="45" text-anchor="end" font-family="Archivo" font-weight="800" font-size="17" fill="#1B5A99">Verrouiller</text>
+          <text x="730" y="108" text-anchor="end" font-family="Spectral" font-size="14.5" fill="#3E4B57">cher ou dangereux à rattraper · à poser en amont</text>
+          <polygon points="150,69 150,81 120,75" fill="#B06710"/>
+          <polygon points="610,69 610,81 640,75" fill="#1B5A99"/>
+        </svg>
+      </div>
+      <figcaption>Le fil rouge de tout le dossier, décliné sur cinq terrains.</figcaption>
+    </figure>
+
+    <p>Deux idées traversent tous les sujets. La première&nbsp;: <strong>différer ce qui est bon marché à changer, verrouiller ce qui est cher ou dangereux à rattraper.</strong> La seconde&nbsp;: dans un monde où produire devient gratuit, la valeur monte d'un cran — <strong>de l'objet vers le méta, du «&nbsp;faire&nbsp;» vers le «&nbsp;gouverner le sens et en répondre&nbsp;».</strong></p>
+
+    <h2>Les cinq pages</h2>
+    <div class="cards">
+      <button class="navcard" data-go="ia">
+        <span class="ic">
+          <svg viewBox="0 0 46 46" width="46" height="46" aria-hidden="true"><rect width="46" height="46" rx="9" fill="#F3E6D3"/><path d="M19 13 l8 0 2 7 -12 0 z" fill="#B06710"/><path d="M17 20 l12 0 0 4 -12 0 z" fill="#17212B"/><path d="M23 24 L23 40 M23 28 L30 34 M23 28 L16 34" stroke="#B06710" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>
+        </span>
+        <span class="tx"><p class="n">IA &amp; MCP</p><p class="d">L'interface conversationnelle n'est pas la finalité. Capacités métier, pas «&nbsp;SQL en langage naturel&nbsp;».</p></span>
+      </button>
+      <button class="navcard" data-go="apps">
+        <span class="ic">
+          <svg viewBox="0 0 46 46" width="46" height="46" aria-hidden="true"><rect width="46" height="46" rx="9" fill="#DCE6F0"/><path d="M12 24 l6 -6 6 6 0 10 -12 0 z" fill="#1B5A99"/><path d="M26 26 l5 -5 5 5 0 8 -10 0 z" fill="#17212B"/><line x1="10" y1="37" x2="38" y2="37" stroke="#1B5A99" stroke-width="2.5"/></svg>
+        </span>
+        <span class="tx"><p class="n">Applications &amp; conteneurs</p><p class="d">Industrialiser sans brider le vibecoding. Surface libre, contrat verrouillé — le paved road.</p></span>
+      </button>
+      <button class="navcard" data-go="typo">
+        <span class="ic">
+          <svg viewBox="0 0 46 46" width="46" height="46" aria-hidden="true"><rect width="46" height="46" rx="9" fill="#F3E6D3"/><circle cx="16" cy="16" r="4" fill="#B06710"/><rect x="12" y="24" width="8" height="10" rx="2" fill="#1B5A99"/><path d="M28 14 l8 0 0 20 -8 0 z" fill="#17212B"/><path d="M30 20 l4 0 M30 24 l4 0" stroke="#fff" stroke-width="1.5"/></svg>
+        </span>
+        <span class="tx"><p class="n">Typologie &amp; shadow</p><p class="d">Classer les applis par ce qu'elles touchent. Dire oui vite, et faire sortir le shadow de l'ombre.</p></span>
+      </button>
+      <button class="navcard" data-go="metier">
+        <span class="ic">
+          <svg viewBox="0 0 46 46" width="46" height="46" aria-hidden="true"><rect width="46" height="46" rx="9" fill="#DCE6F0"/><rect x="12" y="18" width="22" height="15" rx="3" fill="#17212B"/><circle cx="23" cy="25" r="5" fill="none" stroke="#1B5A99" stroke-width="2.5"/><rect x="18" y="14" width="10" height="5" rx="2" fill="#1B5A99"/></svg>
+        </span>
+        <span class="tx"><p class="n">Métier &amp; compétences</p><p class="d">Où va le chef de projet data dans 5–10 ans. Ce qu'il faut maîtriser, ce qu'on arrête d'apprendre.</p></span>
+      </button>
+      <button class="navcard" data-go="waze">
+        <span class="ic">
+          <svg viewBox="0 0 46 46" width="46" height="46" aria-hidden="true"><rect width="46" height="46" rx="9" fill="#F0DEDC"/><path d="M23 12 c6 0 10 4 10 10 c0 7 -10 14 -10 14 c0 0 -10 -7 -10 -14 c0 -6 4 -10 10 -10 z" fill="#9E2B2B"/><circle cx="23" cy="22" r="4" fill="#fff"/></svg>
+        </span>
+        <span class="tx"><p class="n">Atrophie &amp; effets de bord</p><p class="d">Le piège du GPS&nbsp;: on perd la carte, on crée le second bouchon, et l'outil façonne sa propre réalité.</p></span>
+      </button>
+      <button class="navcard" data-go="ia" style="visibility:hidden"><span></span></button>
+    </div>
+
+    <p class="colophon">Document de travail issu d'une série d'échanges. À challenger, à faire circuler, à amender. Imprimable en PDF (tout s'imprime d'un bloc).</p>
+  </div>
+</section>
+
+<!-- ============ IA & MCP ============ -->
+<section class="page" id="ia">
+  <div class="wrap">
+    <p class="eyebrow">ANALOGIE — LA LAMPE TORCHE</p>
+    <h1 class="ttl display">L'interface n'est pas la finalité</h1>
+
+    <div class="story">
+      <p class="life">DANS LA VIE</p>
+      Dans un grenier, vous n'allumez pas la lampe torche pour lire l'étiquette d'un carton posé en pleine lumière. Vous l'allumez pour fouiller les recoins sombres, là où vous ne savez pas encore ce qui se cache. La lampe ne sert à rien sur ce qui est déjà éclairé&nbsp;; elle ne vaut que pour l'inconnu.
+    </div>
+
+    <figure>
+      <div class="illus">
+        <svg viewBox="0 0 760 230" role="img" aria-label="Lampe torche : zone éclairée versus recoin sombre">
+          <!-- zone éclairée -->
+          <rect x="24" y="24" width="330" height="182" rx="6" fill="#F3E6D3" stroke="#B06710" stroke-width="1.5"/>
+          <text x="44" y="52" font-family="Archivo" font-weight="800" font-size="15" fill="#B06710">Déjà éclairé</text>
+          <rect x="44" y="72" width="60" height="46" rx="3" fill="#fff" stroke="#B06710" stroke-width="1.5"/>
+          <text x="74" y="135" text-anchor="middle" font-family="Archivo" font-size="11.5" fill="#B06710">besoin connu</text>
+          <text x="44" y="168" font-family="Spectral" font-size="14" fill="#3E4B57">« liste les locataires fragiles</text>
+          <text x="44" y="187" font-family="Spectral" font-size="14" fill="#3E4B57">lors d'une canicule »</text>
+          <text x="330" y="100" text-anchor="end" font-family="Archivo" font-weight="700" font-size="12" fill="#B06710">→ une règle, pas l'IA</text>
+
+          <!-- recoin sombre + torche -->
+          <rect x="406" y="24" width="330" height="182" rx="6" fill="#1b2733"/>
+          <text x="426" y="52" font-family="Archivo" font-weight="800" font-size="15" fill="#DCE6F0">Recoin sombre</text>
+          <!-- torch -->
+          <path d="M420 150 l26 -8 0 20 -26 -8 z" fill="#C8C2B4"/>
+          <path d="M446 136 L690 96 L690 176 L446 164 Z" fill="#1B5A99" opacity="0.28"/>
+          <circle cx="648" cy="118" r="5" fill="#DCE6F0"/>
+          <circle cx="672" cy="150" r="4" fill="#9AA6B0"/>
+          <text x="612" y="112" font-family="Archivo" font-size="22" font-weight="800" fill="#DCE6F0">?</text>
+          <text x="426" y="190" font-family="Spectral" font-size="14" fill="#9AA6B0">« quels signaux faibles ratons-nous ? »</text>
+          <text x="716" y="196" text-anchor="end" font-family="Archivo" font-weight="700" font-size="12" fill="#6fa8da">→ la vraie valeur de l'IA</text>
+        </svg>
+      </div>
+      <figcaption>Sur le besoin déjà cadré, l'IA conversationnelle double une réponse qu'on connaît. Sa valeur est dans l'inattendu.</figcaption>
+    </figure>
+
+    <div class="bridge">
+      <p class="h">LE MÊME PROBLÈME CHEZ NOUS</p>
+      <p>On développe un MCP + LLM branché sur l'entrepôt pour poser des questions en langage naturel. Le réflexe est d'en faire «&nbsp;un chatbot sur toutes les tables&nbsp;». Mais si les critères de fragilité canicule sont déjà connus, demander la liste à l'IA, c'est allumer la torche en plein jour&nbsp;: coûteux, non déterministe, non auditable.</p>
+    </div>
+
+    <h2>La règle d'usage&nbsp;: non pas «&nbsp;impossible&nbsp;», mais «&nbsp;non récurrent&nbsp;»</h2>
+    <p>Ce qui est récurrent <em>et</em> productible doit être <strong>cristallisé</strong> en capacité fiable, versionnée, gouvernée. On réserve l'IA à ce qui ne se met pas en process&nbsp;: les croisements exploratoires, les questions encore mal formulées, les signaux qu'on ne sait pas nommer. Le besoin se range sur un continuum&nbsp;:</p>
+    <div class="flow">
+      <span class="c">Règle connue → automatiser</span><span class="ar">·</span>
+      <span class="c">Question connue → interroger</span><span class="ar">·</span>
+      <span class="c">Analyse complexe → assister</span><span class="ar">·</span>
+      <span class="c">Mal formulé → aider à formuler</span><span class="ar">·</span>
+      <span class="c">Relation inconnue → explorer</span><span class="ar">·</span>
+      <span class="c end">Décision → humain responsable</span>
+    </div>
+
+    <h2>Le MCP expose des capacités, pas la plomberie</h2>
+    <div class="story">
+      <p class="life">AUTRE IMAGE</p>
+      On ne donne pas au client la clé de la cuisine et 400 ingrédients bruts en lui disant «&nbsp;débrouille-toi&nbsp;». On lui propose un <strong>menu</strong> de plats éprouvés. Le MCP, c'est le menu&nbsp;: des capacités métier stables, pas la structure technique de l'entrepôt.
+    </div>
+    <p>Concrètement, quelques familles suffisent pour un MVP&nbsp;: <strong>connaissance</strong> (get_population, get_kpi — le MCP sait ce qu'est un «&nbsp;taux d'impayés&nbsp;», l'IA ne le réinvente pas), <strong>analyse</strong> (compare, trend, segment, find_anomalies), <strong>découverte</strong> (find_correlations, discover_patterns — avec la mention explicite «&nbsp;association statistique, pas causalité&nbsp;»), <strong>explication</strong> (explain_population, get_data_lineage — pourquoi ce locataire est dans la liste), et <strong>action</strong> (propose → approve → execute, jamais d'écriture automatique sur les cas sensibles).</p>
+    <p class="thesis display">Faire de l'IA l'orchestrateur de capacités fiables — jamais le détenteur de la vérité métier.</p>
+
+    <h2>La couche sémantique gouvernée, c'est l'outil stable qu'on cherchait</h2>
+    <p>Power BI comme paradigme de lecture est en fin de course chez nous&nbsp;: la valeur est dans l'<em>agir</em>, pas le <em>voir</em>. Mais il ne faut pas tuer avec lui ce qu'il offrait gratuitement — le modèle sémantique, les métriques certifiées, la sécurité au niveau ligne. Cette couche doit <strong>survivre</strong> à Power BI et devenir ce que l'IA <em>et</em> les applis interrogent. Que l'IA écrive du SQL libre ou passe par des tools est un détail&nbsp;: ce qui compte, c'est qu'elle écrive <span class="em-b">au-dessus d'une frontière gouvernée</span> (droits, périmètre, masquage, journalisation), jamais sur les tables brutes. La frontière, pas l'interface.</p>
+
+    <div class="keep">
+      <p class="k">CE QU'ON RETIENT</p>
+      <p>La conversation est une <b>interface</b>, pas une finalité. La vraie rupture&nbsp;: passer d'un SI qui attend qu'on sache quoi chercher à un SI qui aide à découvrir quoi regarder.</p>
+      <p>Le connu et récurrent se <b>cristallise</b> en capacité certifiée&nbsp;; l'inconnu se <b>explore</b> avec l'IA.</p>
+      <p>Le MCP expose des <b>capacités métier</b>, adossées à une <b>couche sémantique gouvernée</b> — le seul vrai «&nbsp;outil stable et uniformisé&nbsp;».</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APPLICATIONS ============ -->
+<section class="page" id="apps">
+  <div class="wrap">
+    <p class="eyebrow blue">ANALOGIE — LE LOTISSEMENT</p>
+    <h1 class="ttl display">Industrialiser sans brider</h1>
+
+    <div class="story">
+      <p class="life">DANS LA VIE</p>
+      Dans un lotissement, personne n'impose la couleur des murs ni la disposition des chambres — chaque maison est différente, et c'est très bien. Mais toutes se raccordent <strong>obligatoirement</strong> au même réseau d'eau, d'électricité et d'assainissement, et respectent les normes de sécurité. On est libre à l'intérieur, contraint à la frontière.
+    </div>
+
+    <figure>
+      <div class="illus">
+        <svg viewBox="0 0 760 240" role="img" aria-label="Lotissement : maisons différentes, raccordements communs obligatoires">
+          <!-- houses, varied -->
+          <g>
+            <path d="M70 150 l0 -40 40 -30 40 30 0 40 z" fill="#F3E6D3" stroke="#B06710" stroke-width="2"/><rect x="95" y="120" width="30" height="30" fill="#fff" stroke="#B06710"/>
+          </g>
+          <g>
+            <path d="M210 150 l0 -55 45 0 0 55 z" fill="#E3E6E9" stroke="#B06710" stroke-width="2"/><circle cx="232" cy="118" r="10" fill="#fff" stroke="#B06710"/>
+          </g>
+          <g>
+            <path d="M330 150 l0 -35 25 -25 25 25 0 35 z" fill="#DCE6F0" stroke="#B06710" stroke-width="2"/><rect x="345" y="122" width="20" height="28" fill="#fff" stroke="#B06710"/>
+          </g>
+          <text x="70" y="78" font-family="Archivo" font-weight="800" font-size="15" fill="#B06710">Libre à l'intérieur</text>
+          <text x="70" y="98" font-family="Spectral" font-size="13" fill="#3E4B57" opacity="0">x</text>
+
+          <!-- ground line + utility trunk -->
+          <line x1="40" y1="150" x2="720" y2="150" stroke="#8a949d" stroke-width="2"/>
+          <rect x="40" y="188" width="680" height="20" rx="4" fill="#1B5A99"/>
+          <text x="52" y="203" font-family="Archivo" font-weight="800" font-size="12.5" fill="#fff">RÉSEAU COMMUN — identité · sécurité · observabilité · CI/CD · API SI</text>
+          <!-- connectors -->
+          <line x1="110" y1="150" x2="110" y2="188" stroke="#1B5A99" stroke-width="3"/>
+          <line x1="232" y1="150" x2="232" y2="188" stroke="#1B5A99" stroke-width="3"/>
+          <line x1="355" y1="150" x2="355" y2="188" stroke="#1B5A99" stroke-width="3"/>
+          <!-- paved road on the right -->
+          <rect x="470" y="60" width="250" height="78" rx="6" fill="#2a3b4d"/>
+          <rect x="470" y="92" width="250" height="14" fill="#44586c"/>
+          <line x1="482" y1="99" x2="520" y2="99" stroke="#E3C07A" stroke-width="3" stroke-dasharray="14 10"/>
+          <line x1="540" y1="99" x2="600" y2="99" stroke="#E3C07A" stroke-width="3" stroke-dasharray="14 10"/>
+          <line x1="620" y1="99" x2="708" y2="99" stroke="#E3C07A" stroke-width="3" stroke-dasharray="14 10"/>
+          <rect x="470" y="60" width="250" height="5" fill="#1B5A99"/>
+          <rect x="470" y="133" width="250" height="5" fill="#1B5A99"/>
+          <text x="595" y="48" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="14" fill="#1B5A99">La route goudronnée</text>
+          <text x="595" y="128" text-anchor="middle" font-family="Spectral" font-size="12.5" fill="#DCE6F0">les glissières te tiennent sans te bloquer</text>
+        </svg>
+      </div>
+      <figcaption>Maisons différentes, raccordements communs non négociables. La route est confortable&nbsp;; les glissières empêchent la sortie de route, elles ne ferment pas le chemin.</figcaption>
+    </figure>
+
+    <div class="bridge">
+      <p class="h">LE MÊME PROBLÈME CHEZ NOUS</p>
+      <p>On vibecode des maquettes (tableaux de bord, tournées impayés, contrôle espaces verts) qui deviennent vite fonctionnelles — plus vite que des conteneurs Azure «&nbsp;front/back&nbsp;» imposés d'emblée. D'où le doute&nbsp;: faut-il un moule applicatif commun&nbsp;? L'homogénéité technique n'est <em>pas</em> une valeur utilisateur. Mais «&nbsp;zéro standard&nbsp;» serait l'anarchie.</p>
+    </div>
+
+    <h2>Standardiser ce qui coûte cher à changer, libérer le reste</h2>
+    <div class="split">
+      <div class="col o">
+        <h4>Surface — différable</h4>
+        <ul>
+          <li>Framework front / back</li>
+          <li>Architecture interne, structure des composants</li>
+          <li>Nommage, arborescence, style</li>
+          <li>Logique métier et UX spécifiques</li>
+        </ul>
+        <p style="margin:10px 0 0;font-size:14px;color:var(--ink-faint);">L'IA harmonise après coup. Bon marché.</p>
+      </div>
+      <div class="col b">
+        <h4>Contrat — à verrouiller</h4>
+        <ul>
+          <li>Identité / SSO, autorisations</li>
+          <li>Secrets, réseau, sauvegarde</li>
+          <li>Logs, observabilité, CI/CD, déploiement</li>
+          <li>Contrats d'API et accès aux données</li>
+        </ul>
+        <p style="margin:10px 0 0;font-size:14px;color:var(--ink-faint);">Rétro-adapter 20 applis&nbsp;: cher et risqué.</p>
+      </div>
+    </div>
+    <p>Le conteneur Azure devient alors un <strong>contrat d'exécution</strong> (il porte le réseau commun), pas un moule dans lequel couler chaque appli. Et le «&nbsp;repo socle&nbsp;» devient mieux qu'un template obligatoire&nbsp;: un <strong>kit de génération</strong> avec un fichier d'instructions pour l'IA — l'IA elle-même diffuse le standard.</p>
+
+    <h2>Le paved road&nbsp;: des glissières, pas des portails</h2>
+    <p>Un <em>portail</em> (gate) bloque tant qu'on n'a pas coché les cases&nbsp;; une <em>glissière</em> (guardrail) laisse rouler et empêche seulement de tomber. La contrainte n'est jamais «&nbsp;tu dois&nbsp;», c'est «&nbsp;le chemin sûr est aussi le plus facile&nbsp;». Trois niveaux d'obligation&nbsp;: <span class="em-o">goudronné</span> (défaut recommandé, zéro friction), <span class="em-b">sous glissière</span> (vérifié par machine, non contournable&nbsp;: SSO, pas de secret en clair, accès gouverné), et <em>balisé</em> (conventions facultatives). Tout l'art&nbsp;: garder le tiroir du milieu le plus petit possible.</p>
+    <p>Et comme ici le développeur est une IA, le paved road change de rôle&nbsp;: il ne s'agit plus de guider un humain pressé, mais d'<strong>ancrer la génération</strong> pour que l'IA converge sur les mêmes invariants — via du policy-as-code, des tests, un contrôle en CI. Le standard devient <em>exécutable</em>, pas déclaratif.</p>
+
+    <h2>Le vrai risque n'est pas l'hétérogénéité — c'est la prolifération</h2>
+    <p>Vingt applis différentes se ré-harmonisent. Mais six mois plus tard, «&nbsp;pourquoi avons-nous 47 applications&nbsp;?&nbsp;». Le rôle de l'architecture se déplace&nbsp;: non plus <em>empêcher</em> de produire, mais <strong>gouverner le portefeuille</strong> — savoir ce qui existe, qui l'utilise, quelles données c'est touché, et détecter quand deux applis devraient fusionner. L'IA fait cette analyse périodique.</p>
+
+    <h3>Références (plateformes qui l'ont vécu)</h3>
+    <div class="refs">
+      <div class="ref found"><span class="who">Netflix — Dianne Marsh, Yunong Xiao</span> <span class="what">« paved road »</span><span class="src">Le paved road est un contrat non obligatoire entre équipes centrales et produit (QCon 2017&nbsp;; freedom &amp; responsibility).</span></div>
+      <div class="ref found"><span class="who">Spotify — Pia Nilsson</span> <span class="what">« golden path »</span><span class="src">« How We Use Golden Paths… », 2020 — contre le « rumour-driven development ».</span></div>
+      <div class="ref win"><span class="who">Spotify — Backstage</span> <span class="what">réussite</span><span class="src">Onboarding (10ᵉ PR) passé d'env. 60 à 20 jours&nbsp;; open-source, donné à la CNCF.</span></div>
+      <div class="ref fail"><span class="who">Jeremiah Lee</span> <span class="what">« Spotify's Failed #SquadGoals », 2020</span><span class="src">Autonomie sans alignement → prolifération de technos, dette de maintenance.</span></div>
+      <div class="ref fail"><span class="who">platformengineering.org</span> <span class="what">« Golden cage syndrome »</span><span class="src">Plateforme conçue pour le contrôle, pas l'usage → contournée. Le « trop de goudron ».</span></div>
+    </div>
+
+    <div class="keep">
+      <p class="k">CE QU'ON RETIENT</p>
+      <p>Standardiser <b>ce qui coûte cher à changer</b> (identité, sécurité, données, exploitation)&nbsp;; libérer le reste.</p>
+      <p>Le conteneur = un <b>contrat d'exécution</b>, pas un moule. Le repo socle = un <b>kit de génération</b> pour l'IA.</p>
+      <p>Des <b>glissières, pas des portails</b>. Et le vrai combat n'est pas l'hétérogénéité, c'est la <b>prolifération</b> — qui se gouverne au niveau du portefeuille.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TYPOLOGIE & SHADOW ============ -->
+<section class="page" id="typo">
+  <div class="wrap">
+    <p class="eyebrow">ANALOGIE — LES TRAVAUX DANS UN LOGEMENT</p>
+    <h1 class="ttl display">Dire oui vite, sans danger</h1>
+
+    <div class="story">
+      <p class="life">DANS LA VIE</p>
+      Changer une ampoule&nbsp;: vous le faites seul, rien à déclarer. Repeindre&nbsp;: un peu plus engageant. Abattre un mur porteur&nbsp;: permis, étude, structure — parce que ce que vous touchez peut faire tomber l'immeuble. Le niveau d'exigence ne dépend pas de l'allure du résultat&nbsp;: il dépend de <strong>ce que les travaux touchent</strong>.
+    </div>
+
+    <figure>
+      <div class="illus">
+        <svg viewBox="0 0 760 210" role="img" aria-label="Trois niveaux de travaux selon ce qu'ils touchent">
+          <!-- type 0 -->
+          <rect x="24" y="30" width="230" height="150" rx="6" fill="#F3E6D3" stroke="#B06710" stroke-width="1.5"/>
+          <circle cx="139" cy="78" r="16" fill="none" stroke="#B06710" stroke-width="3"/><path d="M133 90 l12 0 0 6 -12 0 z" fill="#B06710"/>
+          <text x="139" y="128" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="15" fill="#B06710">Type 0 — l'ampoule</text>
+          <text x="139" y="150" text-anchor="middle" font-family="Spectral" font-size="13" fill="#3E4B57">ne touche aucune donnée</text>
+          <text x="139" y="168" text-anchor="middle" font-family="Spectral" font-size="13" fill="#3E4B57">simulateur APL, calculette</text>
+
+          <!-- type 1 -->
+          <rect x="266" y="30" width="230" height="150" rx="6" fill="#DCE6F0" stroke="#1B5A99" stroke-width="1.5"/>
+          <path d="M360 62 l24 0 0 10 -24 0 z" fill="#1B5A99"/><rect x="368" y="72" width="8" height="26" fill="#1B5A99"/>
+          <text x="381" y="128" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="15" fill="#1B5A99">Type 1 — la peinture</text>
+          <text x="381" y="150" text-anchor="middle" font-family="Spectral" font-size="13" fill="#3E4B57">lit la donnée interne</text>
+          <text x="381" y="168" text-anchor="middle" font-family="Spectral" font-size="13" fill="#3E4B57">cartographie, tournées</text>
+
+          <!-- type 2 -->
+          <rect x="508" y="30" width="228" height="150" rx="6" fill="#F0DEDC" stroke="#9E2B2B" stroke-width="1.5"/>
+          <path d="M604 60 l40 0 0 40 -40 0 z" fill="#9E2B2B" opacity=".25"/><path d="M604 60 l40 40 M644 60 l-40 40" stroke="#9E2B2B" stroke-width="2.5"/>
+          <text x="622" y="128" text-anchor="middle" font-family="Archivo" font-weight="800" font-size="15" fill="#9E2B2B">Type 2 — le mur porteur</text>
+          <text x="622" y="150" text-anchor="middle" font-family="Spectral" font-size="13" fill="#3E4B57">écrit / modifie la donnée</text>
+          <text x="622" y="168" text-anchor="middle" font-family="Spectral" font-size="13" fill="#3E4B57">déclenche des actions</text>
+        </svg>
+      </div>
+      <figcaption>La typologie se fait sur ce que l'appli <strong>touche</strong>, pas sur ce qu'elle a l'air de faire. Et elle se réévalue à chaque évolution.</figcaption>
+    </figure>
+
+    <div class="bridge">
+      <p class="h">LE MÊME PROBLÈME CHEZ NOUS</p>
+      <p>Un collègue a transformé son Excel de simulateur APL / plan d'apurement en une appli propre, vibecodée en 1h. Elle ne lit ni ne stocke aucune donnée de la boîte. La DSI bloque «&nbsp;au titre de la maintenance&nbsp;» — alors qu'on accepterait un site public équivalent sur le portail. La seule différence réelle&nbsp;: l'estampille aux couleurs de la boîte.</p>
+    </div>
+
+    <h2>Trois niveaux, selon le rapport à la donnée</h2>
+    <div class="split">
+      <div class="col o">
+        <h4>Type 0 — volant</h4>
+        <ul>
+          <li>Ne lit rien, n'écrit rien, ne stocke rien</li>
+          <li>Risque = <strong>exactitude + estampille</strong></li>
+          <li>Exigence&nbsp;: un propriétaire métier garant du calcul, une revue de la logique, une version/barème affichée</li>
+          <li>Déploiement quasi libre — <em>la DSI doit apprendre à dire oui vite</em></li>
+        </ul>
+      </div>
+      <div class="col b">
+        <h4>Type 1 &amp; 2 — données internes</h4>
+        <ul>
+          <li><strong>Type 1 (lecture)</strong>&nbsp;: SSO, périmètre, lecture via couche gouvernée, journalisation</li>
+          <li><strong>Type 2 (écriture)</strong>&nbsp;: tout le Type 1 + contrôle transactionnel, validation humaine, réversibilité</li>
+          <li>Risque = accès, RGPD, intégrité — le conteneur se justifie pleinement</li>
+        </ul>
+      </div>
+    </div>
+    <p><strong>L'estampille n'est pas un détail rassurant — c'est le point le plus sérieux.</strong> «&nbsp;Ça n'engage que la responsabilité, pas la technique&nbsp;» doit se lire «&nbsp;ça engage ce qui compte le plus&nbsp;». Un simulateur à nos couleurs qui annonce à un locataire fragile une capacité de remboursement fausse (barème périmé, formule boguée), c'est nous, devant lui et devant la loi. La contrepartie du oui, ce n'est donc pas un conteneur&nbsp;: c'est un garant de l'exactitude et un suivi du barème.</p>
+
+    <h2>Le shadow vibecoding&nbsp;: une opportunité qui devient risque par le refus</h2>
+    <p>Le simulateur existait déjà, en Excel, dans le coin d'un bureau. On ne l'a vu que par hasard. C'est le point vertigineux&nbsp;: <strong>le shadow vibecoding est déjà là, on n'en voit qu'une fraction, et la seule variable qu'on contrôle, c'est s'il remonte ou s'il reste caché.</strong> Chaque «&nbsp;non&nbsp;» sur un cas manifestement raisonnable n'arrête pas le collaborateur — ça lui apprend à ne plus demander. Le coût de production s'est effondré&nbsp;: l'interdiction ne supprime plus la capacité de faire, seulement notre visibilité.</p>
+    <p class="thesis display">Le but de la DSI n'est pas d'empêcher le shadow&nbsp;: c'est de le faire sortir de l'ombre.</p>
+    <p>Pour ça, le chemin officiel doit être plus attractif que le chemin caché (le paved road, encore). Le message interne n'est pas «&nbsp;arrêtez de bricoler&nbsp;», c'est «&nbsp;apportez-nous vos bricolages, on les estampille&nbsp;». Deux garde-fous&nbsp;: toujours un <strong>propriétaire métier nommé</strong> (un outil sans garant est orphelin dès la première évolution)&nbsp;; et un <strong>registre léger</strong> de ce qui tourne, car 47 calculettes «&nbsp;inoffensives&nbsp;» dont plus personne ne sait laquelle dit la vérité, c'est un risque en soi.</p>
+
+    <div class="keep">
+      <p class="k">CE QU'ON RETIENT</p>
+      <p>Classer les applis par <b>ce qu'elles touchent</b> (0 volant / 1 lecture / 2 écriture), et moduler l'exigence en conséquence — au lieu d'un seul niveau pour tout.</p>
+      <p>L'<b>estampille = responsabilité</b> = le point cher et dangereux. On y répond par un garant, pas par de l'infra.</p>
+      <p>Le shadow vibecoding se combat en disant <b>oui vite et bien</b>, pas en disant non. Faire remonter vaut toujours mieux que laisser cacher.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MÉTIER & COMPÉTENCES ============ -->
+<section class="page" id="metier">
+  <div class="wrap">
+    <p class="eyebrow blue">ANALOGIE — DE L'ARGENTIQUE AU NUMÉRIQUE</p>
+    <h1 class="ttl display">La valeur migre</h1>
+
+    <div class="story">
+      <p class="life">DANS LA VIE</p>
+      Le numérique a tué un savoir-faire précieux&nbsp;: développer la pellicule dans une chambre noire, doser les bains, le temps d'exposition. Les photographes dont l'identité tenait à cette technique ont vu leur terrain disparaître. Mais l'<strong>œil</strong> — le cadrage, la lumière, le moment, la direction artistique — n'a jamais valu aussi cher. Ce n'est pas le métier qui meurt&nbsp;: c'est la partie «&nbsp;production manuelle&nbsp;» qui se commoditise, pendant que le «&nbsp;sens&nbsp;» monte.
+    </div>
+
+    <figure>
+      <div class="illus">
+        <svg viewBox="0 0 760 210" role="img" aria-label="La chambre noire se commoditise, l'œil du photographe prend de la valeur">
+          <!-- darkroom fading -->
+          <g opacity="0.5">
+            <rect x="40" y="46" width="280" height="120" rx="6" fill="#E3E6E9" stroke="#8a949d" stroke-width="1.5"/>
+            <circle cx="90" cy="80" r="10" fill="#9E2B2B"/>
+            <rect x="120" y="120" width="50" height="22" rx="3" fill="#8a949d"/>
+            <rect x="185" y="120" width="50" height="22" rx="3" fill="#8a949d"/>
+            <circle cx="260" cy="95" r="18" fill="none" stroke="#8a949d" stroke-width="2"/>
+            <line x1="52" y1="58" x2="308" y2="154" stroke="#9E2B2B" stroke-width="2.5"/>
+          </g>
+          <text x="180" y="186" text-anchor="middle" font-family="Archivo" font-weight="700" font-size="14" fill="#6C7783">Le labo — « faire » → commoditisé</text>
+
+          <!-- arrow -->
+          <path d="M335 106 l40 0 M367 98 l8 8 -8 8" stroke="#17212B" stroke-width="2.5" fill="none"/>
+
+          <!-- camera + eye rising -->
+          <rect x="430" y="66" width="130" height="86" rx="8" fill="#17212B"/>
+          <circle cx="495" cy="109" r="26" fill="none" stroke="#1B5A99" stroke-width="4"/>
+          <circle cx="495" cy="109" r="10" fill="#1B5A99"/>
+          <rect x="520" y="54" width="34" height="18" rx="4" fill="#1B5A99"/>
+          <!-- framing corners -->
+          <path d="M600 70 l22 0 0 6 -16 0 0 12 -6 0 z" fill="#1B5A99"/>
+          <path d="M712 70 l-22 0 0 6 16 0 0 12 6 0 z" fill="#1B5A99"/>
+          <path d="M600 150 l22 0 0 -6 -16 0 0 -12 -6 0 z" fill="#1B5A99"/>
+          <path d="M712 150 l-22 0 0 -6 16 0 0 -12 6 0 z" fill="#1B5A99"/>
+          <text x="620" y="186" text-anchor="middle" font-family="Archivo" font-weight="700" font-size="14" fill="#1B5A99">L'œil — « le sens » → rare</text>
+        </svg>
+      </div>
+      <figcaption>Ce qui devient gratuit&nbsp;: produire. Ce qui devient rare&nbsp;: définir, juger, en répondre.</figcaption>
+    </figure>
+
+    <div class="bridge">
+      <p class="h">LE MÊME PROBLÈME CHEZ NOUS</p>
+      <p>Le chef de projet ingénierie de données structure les flux, construit les solutions, produit les analyses. Or c'est précisément cette partie «&nbsp;faire&nbsp;» que le vibecoding et l'IA commoditisent le plus vite. La partie qui monte en valeur&nbsp;: garantir que l'entrepôt capte le bon besoin, arbitrer ce que veut dire une donnée, et en répondre.</p>
+    </div>
+
+    <h2>Une bifurcation, à choisir maintenant</h2>
+    <div class="split">
+      <div class="col o" style="border-top-color:var(--crimson);">
+        <h4 style="color:var(--crimson);">Chemin bas</h4>
+        <ul>
+          <li>Plombier de données qui maintient des tuyaux que l'IA écrit de mieux en mieux</li>
+          <li>Commoditisé, externalisable, en décroissance</li>
+        </ul>
+      </div>
+      <div class="col b">
+        <h4>Chemin haut</h4>
+        <ul>
+          <li><strong>Data product owner</strong> / responsable de la couche sémantique et de la gouvernance IA</li>
+          <li>Possède les définitions certifiées, les contrats de données, les règles d'accès, la lignée</li>
+          <li>Plus rare, plus stratégique</li>
+        </ul>
+      </div>
+    </div>
+    <p>Dans les deux cas&nbsp;: <strong>moins nombreux, mais plus haut.</strong> On ne captera plus les besoins un par un (le conversationnel le fait)&nbsp;; on concevra et pilotera le <em>système</em> par lequel les besoins remontent, se réconcilient et se cristallisent — la boucle découverte → récurrence → promotion. Le PM ne délivre plus des projets, il fait tourner un operating model, et apprend à <strong>arbitrer et relire à l'échelle</strong> ce que produisent humains et agents.</p>
+
+    <h2>Les compétences, par ordre de valeur</h2>
+    <p>Principe&nbsp;: quand produire devient gratuit, la compétence n'est plus de produire, mais de <strong>spécifier assez pour que l'IA construise juste, et vérifier assez pour pouvoir signer.</strong></p>
+    <div class="split">
+      <div class="col b">
+        <h4>Ce qui monte</h4>
+        <ul>
+          <li><strong>Modélisation &amp; couche sémantique</strong> — data contracts, métriques certifiées (le joyau)</li>
+          <li><strong>Vérification &amp; qualité</strong> — tests de données, lignée, eval harness pour agents («&nbsp;c'est juste, je signe&nbsp;»)</li>
+          <li><strong>Orchestration d'agents</strong> — context engineering, garde-fous policy-as-code, coûts/latence</li>
+          <li><strong>Plateforme &amp; cloud (Azure)</strong> — surtout l'enforcement de gouvernance (RLS, masquage, identités scopées)</li>
+          <li><strong>Fondamentaux SWE</strong> — Git, CI/CD, IaC, tests (sans eux le vibecoding = fragmentation)</li>
+        </ul>
+      </div>
+      <div class="col o">
+        <h4>Ce qui change de nature / baisse</h4>
+        <ul>
+          <li><strong>SQL</strong> — à garder, mais comme langage d'<em>audit et de spécification</em>&nbsp;: le lire mieux qu'on ne l'écrit</li>
+          <li>Écrire des pipelines à la main</li>
+          <li>Fabriquer des dashboards manuellement</li>
+          <li>L'expertise pointue d'un outil que l'IA absorbe</li>
+          <li>La mémorisation de syntaxe</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>La vraie douve&nbsp;: le jugement et la responsabilité</h2>
+    <p>Ce que l'IA ne pourra ni tenir ni simuler, surtout chez un bailleur social&nbsp;: <strong>rendre des comptes.</strong> Le jour où une segmentation discriminante part en production, c'est un humain qui répond devant la CNIL, la direction, le locataire. Cette redevabilité ne se délègue pas à un modèle&nbsp;; elle se concentre sur celui qui possède la couche gouvernée. Le contexte métier fin — réglementation HLM, éthique du ciblage des publics fragiles — est exactement ce que l'IA maîtrise le plus mal et ce qui devient le plus déterminant.</p>
+
+    <div class="keep">
+      <p class="k">CE QU'ON RETIENT</p>
+      <p>La valeur migre du <b>faire</b> vers le <b>gouverner le sens et en répondre</b>. Basculer son identité pro maintenant, pendant que le faire vaut encore quelque chose à troquer.</p>
+      <p>Colonne vertébrale&nbsp;: <b>posséder la définition</b> (modélisation/sémantique) + <b>pouvoir signer</b> (vérification), avec l'<b>orchestration d'agents</b> comme nouveau levier. SQL et cloud = prérequis, pas différenciateurs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WAZE ============ -->
+<section class="page" id="waze">
+  <div class="wrap">
+    <p class="eyebrow">ANALOGIE — LE GPS / WAZE</p>
+    <h1 class="ttl display">Garder une voix dissidente</h1>
+
+    <div class="story">
+      <p class="life">DANS LA VIE</p>
+      Tout le monde suit Waze. Il optimise, il garantit — et, à force, on perd la carte mentale de la ville. Pire&nbsp;: quand un bouchon apparaît, Waze réoriente tout le monde <em>au même instant</em> sur la même alternative… et crée un second bouchon. Chaque conducteur reçoit le bon conseil&nbsp;; c'est leur simultanéité qui produit le mauvais résultat collectif. Et l'outil ne lit pas seulement le trafic&nbsp;: il le fabrique, puis mesure le trafic qu'il a fabriqué.
+    </div>
+
+    <figure>
+      <div class="illus">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Waze : perte de carte mentale, second bouchon, boucle de rétroaction">
+          <!-- route A jammed -->
+          <path d="M60 60 L360 60" stroke="#C4CACF" stroke-width="16" stroke-linecap="round"/>
+          <text x="60" y="44" font-family="Archivo" font-weight="700" font-size="12.5" fill="#6C7783">Route A — bouchon</text>
+          <g fill="#9E2B2B"><rect x="150" y="53" width="18" height="14" rx="3"/><rect x="176" y="53" width="18" height="14" rx="3"/><rect x="202" y="53" width="18" height="14" rx="3"/><rect x="228" y="53" width="18" height="14" rx="3"/></g>
+          <!-- reroute arrow -->
+          <path d="M250 70 C250 110 250 120 250 140" stroke="#1B5A99" stroke-width="2.5" fill="none" stroke-dasharray="6 5"/>
+          <path d="M244 134 l6 8 6 -8" fill="#1B5A99"/>
+          <!-- route B now jammed too -->
+          <path d="M60 160 L360 160" stroke="#C4CACF" stroke-width="16" stroke-linecap="round"/>
+          <text x="60" y="194" font-family="Archivo" font-weight="700" font-size="12.5" fill="#9E2B2B">Route B — second bouchon créé par l'outil</text>
+          <g fill="#9E2B2B"><rect x="150" y="153" width="18" height="14" rx="3"/><rect x="176" y="153" width="18" height="14" rx="3"/><rect x="202" y="153" width="18" height="14" rx="3"/><rect x="228" y="153" width="18" height="14" rx="3"/><rect x="254" y="153" width="18" height="14" rx="3"/></g>
+
+          <!-- faded mental map -->
+          <g opacity="0.45">
+            <rect x="430" y="40" width="130" height="90" rx="6" fill="none" stroke="#8a949d" stroke-width="2" stroke-dasharray="4 4"/>
+            <path d="M430 75 L560 75 M470 40 L470 130 M510 40 L510 130" stroke="#8a949d" stroke-width="1.5"/>
+          </g>
+          <text x="495" y="150" text-anchor="middle" font-family="Archivo" font-weight="700" font-size="12.5" fill="#6C7783">carte mentale qui s'efface</text>
+
+          <!-- feedback loop -->
+          <g transform="translate(620,90)">
+            <path d="M0 0 a46 46 0 1 1 -1 0" fill="none" stroke="#1B5A99" stroke-width="3"/>
+            <path d="M-6 -4 l6 -8 8 6" fill="#1B5A99"/>
+            <text x="0" y="-60" text-anchor="middle" font-family="Archivo" font-weight="700" font-size="12.5" fill="#1B5A99">l'outil façonne</text>
+            <text x="0" y="78" text-anchor="middle" font-family="Archivo" font-weight="700" font-size="12.5" fill="#1B5A99">la réalité qu'il mesure</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Trois pièges empilés&nbsp;: la compétence individuelle s'atrophie, l'optimisation collective crée ses propres effets de bord, et la boucle se referme sur elle-même.</figcaption>
+    </figure>
+
+    <div class="bridge">
+      <p class="h">LE MÊME PROBLÈME CHEZ NOUS</p>
+      <p>Si tout le monde interroge la même définition certifiée de la «&nbsp;fragilité&nbsp;», au même moment, avec la même logique&nbsp;: on oriente toutes les équipes sur la même population, on laisse des angles morts (ceux juste sous le seuil, jamais vus), et on ne collecte des observations que sur les gens que la définition a déjà désignés — qui confirment la définition. Les critères se prouvent eux-mêmes en ne regardant jamais ailleurs.</p>
+    </div>
+
+    <h2>Trois mécanismes à distinguer</h2>
+    <p><strong>1. L'atrophie individuelle.</strong> À force de suivre, la carte mentale rouille — le savoir métier (l'âge, l'étage, l'isolement, le territoire) cesse d'être <em>porté</em> et devient une boîte noire qu'on interroge. On ne s'en aperçoit que le jour où l'outil se trompe.</p>
+    <p><strong>2. L'effet de bord systémique.</strong> Le second bouchon ne vient pas d'un mauvais conseil, mais de la simultanéité des bons conseils identiques. C'est l'inverse exact de la fragmentation du «&nbsp;modèle Spotify&nbsp;»&nbsp;: non plus l'autonomie sans alignement, mais <span class="em-c">l'alignement sans autonomie</span> — la monoculture, qui tombe entière le jour où arrive le bon parasite.</p>
+    <p><strong>3. La boucle de rétroaction.</strong> L'outil ne décrit plus le monde&nbsp;: il le façonne, puis mesure le monde qu'il a façonné. La fragilité «&nbsp;hors critères&nbsp;» devient statistiquement invisible — non parce qu'elle n'existe pas, mais parce qu'on ne va jamais la voir.</p>
+
+    <h2>La compétence humaine comme source de divergence</h2>
+    <p class="thesis display">La valeur de l'humain n'est pas de produire le résultat — l'IA le fait mieux. Sa valeur est d'être ce qui, dans le système, refuse parfois de suivre.</p>
+    <p>Le conducteur qui connaît la ville et se dit «&nbsp;non, pas cette rue&nbsp;» est précisément celui qui ne grossit pas le second bouchon. Garder une capacité de jugement propre maintient une <strong>variété de comportement</strong> — et cette variété est ce qui empêche l'effondrement à l'unisson. Celui qui regarde une liste de l'IA et demande «&nbsp;pourquoi aucun locataire du secteur Est&nbsp;? pourquoi que des 4ᵉ étages&nbsp;?&nbsp;» n'est pas un vestige lent qu'on tolère&nbsp;: il est l'organe qui détecte que l'outil s'est mis à tourner en rond.</p>
+
+    <h2>Trois conséquences concrètes</h2>
+    <p><strong>La diversité est une fonction de sécurité, pas un défaut.</strong> La DSI voudra instinctivement que tous utilisent le même outil de la même façon — propre, auditable. Mais l'uniformité totale rend fragile à l'unisson. Garder des poches de jugement, des gens autorisés à ne pas suivre et à le justifier, c'est de la résilience achetée.</p>
+    <p><strong>Les outils doivent exposer ce qu'ils taisent.</strong> Au-delà de «&nbsp;pourquoi ces locataires sont dans la liste&nbsp;», savoir dire <em>qui est juste à côté</em> — les cas-limites, les exclus de peu. Le danger n'est jamais dans ce que la liste contient, il est dans ce qu'elle omet.</p>
+    <p><strong>Surveiller la boucle.</strong> Comparer régulièrement la population qu'on <em>traite</em> à la population réelle, via un échantillon aléatoire <em>hors critères</em>. Sans ça, on ne saura jamais si l'outil a raison — seulement qu'il est cohérent avec lui-même. Waze ne découvre une nouvelle route que parce que, parfois, quelqu'un ne l'écoute pas.</p>
+
+    <div class="keep">
+      <p class="k">CE QU'ON RETIENT — ET CLÔTURE DU DOSSIER</p>
+      <p>Déléguer le «&nbsp;faire&nbsp;» à un outil unique, sans voix critique, fait avancer tout le système en chœur — droit dans l'angle mort qu'il ne voit pas.</p>
+      <p>L'enjeu n'est pas que tout le monde reste expert. C'est qu'il reste <b>toujours quelqu'un dont le métier explicite est de comprendre, douter et corriger.</b> Tant que cette fonction est nommée et tenue, la compétence ne fond pas&nbsp;: elle se concentre. Le jour où elle n'est portée par personne «&nbsp;parce que le LLM sait&nbsp;», là, elle fond.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="sitefoot">
+  <div class="wrap">
+    <p class="colophon">Doctrine IA · données · applications — synthèse des échanges, DSI d'un bailleur social. Document de travail, octobre 2026. Chaque page s'ouvre sur une analogie&nbsp;: lampe torche, lotissement, travaux, argentique, GPS. Le fil unique&nbsp;: différer ce qui est bon marché, verrouiller ce qui est cher ou dangereux — et monter du faire vers le gouverner le sens.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var btns  = Array.prototype.slice.call(document.querySelectorAll('[data-go]'));
+  function show(id){
+    var found=false;
+    pages.forEach(function(p){ var on=(p.id===id); p.classList.toggle('active',on); if(on)found=true; });
+    if(!found){ id='accueil'; document.getElementById('accueil').classList.add('active'); }
+    document.querySelectorAll('.navlinks button').forEach(function(b){
+      b.setAttribute('aria-current', b.getAttribute('data-go')===id ? 'true':'false');
+    });
+    if(history.replaceState) history.replaceState(null,'','#'+id);
+    window.scrollTo({top:0,behavior:'instant' in window ? 'instant':'auto'});
+  }
+  btns.forEach(function(b){ b.addEventListener('click',function(){ show(b.getAttribute('data-go')); }); });
+  window.addEventListener('hashchange',function(){ show((location.hash||'#accueil').slice(1)); });
+  show((location.hash||'#accueil').slice(1));
+})();
+</script>
+</body>
+</html>

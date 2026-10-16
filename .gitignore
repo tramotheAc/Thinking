@@ -1,0 +1,30 @@
+# Dépendances et caches Node (le site n'a aucune dépendance installée,
+# mais npx peut en laisser traîner)
+node_modules/
+.npm/
+npm-debug.log*
+
+# Sorties éventuelles d'un déploiement ou d'un export
+dist/
+build/
+.vercel/
+.netlify/
+
+# Captures et rapports de test locaux
+captures/
+test-results/
+playwright-report/
+
+# Environnement local
+.env
+.env.*
+
+# Éditeurs et systèmes
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

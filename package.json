@@ -1,0 +1,9 @@
+{
+  "name": "dossier-ia-donnees-dsi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Synthèse DSI bailleur social : IA, données et vibecoding — site statique d'une seule page.",
+  "scripts": {
+    "start": "npx --yes serve@14.2.6 --listen 3000 ."
+  }
+}
